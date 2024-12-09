@@ -17,7 +17,8 @@ connectDB();
 // CORS middleware configuration
 const allowedOrigins = [
     "http://localhost:3000", // Local development
-    "https://facebook-servside.onrender.com" // Deployed Render app
+    "https://facebook-servside.onrender.com", // Deployed Render app
+    "https://gavo.vercel.app"
 ];
 
 app.use(cors({
