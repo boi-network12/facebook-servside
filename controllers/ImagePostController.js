@@ -141,7 +141,7 @@ exports.createComment = async (req, res) => {
 
         // create a notification for the user who posted the image
         if (post.userId.toString() !== userId.toString()) {
-            await createNotification(post.userId, `${req.user.firstName} commented on your post`)
+            await createNotification(post.userId, `${req.user.firstName || "Someone"} commented on your post`)
         }
 
         // Respond wth the created comment data

@@ -6,7 +6,8 @@ exports.createNotification = async (userId, message, title = "Notification") => 
         const newNotification = new Notification({
             userId,
             message,
-            title
+            title,
+            createdAt: new Date(),
         });
 
         await newNotification.save();
