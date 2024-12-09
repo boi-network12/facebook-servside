@@ -1,9 +1,10 @@
-const { v2 } = require("cloudinary");
+const cloudinary = require('cloudinary').v2;
 
-v2.config({
-    cloud_name: "dypgxulgp",
-    api_key: "942926628544572",
-    api_secret: "jLLbxTIwtXMfjb9HXMKSGBXXqTA",
+// Configure Cloudinary with your credentials
+cloudinary.config({
+    cloud_name: 'dypgxulgp',  // Replace with your cloud name
+    api_key: '942926628544572',        // Replace with your API key
+    api_secret: 'jLLbxTIwtXMfjb9HXMKSGBXXqTA',  // Replace with your API secret
 });
 
-module.exports = { cloudinary: v2 }
+module.exports = cloudinary;

@@ -1,31 +1,45 @@
 const multer = require("multer");
 const path = require("path");
+const cloudinary = require("../config/cloudinary");
 
-// Set storage settings for Multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const uploadPath = path.join(__dirname, "../uploads");
-        console.log("Saving files to:", uploadPath); // Log upload path
-        cb(null, uploadPath);
-    },
-    filename: (req, file, cb) => {
-        const filename = Date.now() + path.extname(file.originalname);
-        console.log("Generated filename:", filename); // Log filename
-        cb(null, filename);
-    },
-});
+const storage = multer.memoryStorage();
 
+const upload = multer({ storage });
 
-// File filter to allow only images
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith("image/")) {
-        cb(null, true);
-    } else {
-        cb(new Error("Only image files are allowed!"), false);
+// upload image to cloudinary
+const uploadImageToCloudinary = async (req, res, next) => {
+    try {
+
+        const images = [];
+        for (const file of req.files) {
+            const result = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                    { folder: "upload" },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result);
+                    }
+                );
+                stream.end(file.buffer);
+            });
+
+            images.push({
+                url: result.secure_url,
+                public_id: result.public_id,
+            });
+        }
+
+        req.images = images;
+        next();
+    } catch (error) {
+        console.error("Cloudinary Upload Error:", error);
+        res.status(500).json({ message: "Error uploading image", error: error.message });
     }
 };
 
-// Configure multer with the storage and file filter
-const upload = multer({ storage, fileFilter });
 
-module.exports = upload;
+
+module.exports = {
+    upload,
+    uploadImageToCloudinary
+};
